@@ -28,12 +28,21 @@ function plugin(options) {
       var context = params ? extend({}, params, this) : extend({}, this);
 
       var result = null;
-      var promise = consolidate[options.engine].render(partialContents, context, function(error, rendered) {
-        if (error) {
-          throw new Error(error);
-        }
+      var promise = new Promise(function (resolve, reject) {
+        // There is some weirdness in consolidate.js API -- the returned promise is resolved
+        // properly ONLY if we don't provide the callback function. If we do provide the callback,
+        // a dead promise is returned (one that will never resolve or reject).
+        // For this reason, to handle both synchronous and asynchronous rendering, we have to create 
+        // and resolve our own promise here.
+        consolidate[options.engine].render(partialContents, context, function(error, rendered) {
+          if (error) {
+            reject(error);
+            throw new Error(error);
+          }
 
-        result = rendered;
+          result = rendered;
+          resolve(rendered);
+        });
       });
 
       // If the result was not computed synchronously, return a promise.
