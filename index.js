@@ -28,8 +28,7 @@ function plugin(options) {
       var context = params ? extend({}, params, this) : extend({}, this);
 
       var result = null;
-
-      consolidate[options.engine].render(partialContents, context, function(error, rendered) {
+      var promise = consolidate[options.engine].render(partialContents, context, function(error, rendered) {
         if (error) {
           throw new Error(error);
         }
@@ -37,13 +36,8 @@ function plugin(options) {
         result = rendered;
       });
 
-      if (result === null) {
-        throw new Error('This template engine is not supported.');
-      }
-
-      returned = true;
-
-      return result;
+      // If the result was not computed synchronously, return a promise.
+      return result === null ? promise : result;
     };
 
     done();
