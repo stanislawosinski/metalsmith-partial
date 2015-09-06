@@ -10,7 +10,7 @@
   "author": "Mitsunori KUBOTA <anatoo.jp@gmail.com> (http://anatoo.jp)",
   "license": "MIT",
   "dependencies": {
-    "consolidate": "^0.10.0",
+    "consolidate": "^0.13.1",
     "extend": "^2.0.0"
   },
   "devDependencies": {
